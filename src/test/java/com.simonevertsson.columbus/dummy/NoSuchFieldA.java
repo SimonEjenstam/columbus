@@ -5,9 +5,24 @@ import com.simonevertsson.columbus.Mapping;
 public class NoSuchFieldA {
 
   @Mapping(clazz = NoSuchFieldB.class, field = "fieldE") // Reference an unknown field (skips the mapping)
-  public String fieldA;
+  private String fieldA;
 
   @Mapping(clazz = NoSuchFieldB.class, field = "fieldD") // Maps correctly
-  public int fieldB;
+  private int fieldB;
 
+  public String getFieldA() {
+    return fieldA;
+  }
+
+  public void setFieldA(String fieldA) {
+    this.fieldA = fieldA;
+  }
+
+  public int getFieldB() {
+    return fieldB;
+  }
+
+  public void setFieldB(int fieldB) {
+    this.fieldB = fieldB;
+  }
 }
