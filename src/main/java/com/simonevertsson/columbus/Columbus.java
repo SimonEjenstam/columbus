@@ -10,18 +10,25 @@ public class Columbus {
    * Tries to map fields, annotated with {@link Mapping} from a source object to a destination object.
    *
    * @param src The source object annotated which has field annotated with {@link Mapping}
-   * @param dst The destination object whose fields will be updated with the mapped values.
+   * @param dstArgs Vararg with destination objects whose fields will be updated with the mapped values.
    * @return The destination object
    */
-  public static Object mapToDst(final Object src, final Object dst) throws IllegalAccessException {
+  public static void mapToDst(final Object src, final Object... dstArgs) {
     final Set<Field> srcMappedFields = findMappedFields(src.getClass());
     for(Field srcField : srcMappedFields) {
       final Mapping srcMapping = srcField.getAnnotation(Mapping.class);
-      if(srcMapping.clazz() != dst.getClass()) continue;
-      trySetDstField(src, dst, srcField, srcMapping);
-    }
+      for(Object dst : dstArgs) {
+        if (srcMapping.clazz() == dst.getClass()) {
+          try {
+            trySetDstField(src, dst, srcField, srcMapping);
+          } catch (IllegalAccessException e) {
+            e.printStackTrace();
+          }
 
-    return dst;
+          break;
+        }
+      }
+    }
   }
 
   /**
@@ -93,19 +100,26 @@ public class Columbus {
    * Tries to map fields to a source object annotated with {@link Mapping} from a destination object.
    *
    * @param src The source object annotated which has fields annotated with {@link Mapping} that will be updated with values from destination object
-   * @param dst The destination object whose fields will be attempted to be retrieved
+   * @param dstArgs Vararg with destination objects whose fields will be attempted to be retrieved.
    * @return The source object
    */
-  public static Object mapFromDst(final Object src, final Object dst) throws IllegalAccessException {
+  public static void mapFromDst(final Object src, final Object... dstArgs) {
     final Set<Field> srcMappedFields = findMappedFields(src.getClass());
 
     for(Field srcField : srcMappedFields) {
       final Mapping srcMapping = srcField.getAnnotation(Mapping.class);
-      if(srcMapping.clazz() != dst.getClass()) continue;
-      tryGetDstField(src, dst, srcField, srcMapping);
-    }
+      for(Object dst : dstArgs) {
+        if (srcMapping.clazz() == dst.getClass()) {
+          try {
+            tryGetDstField(src, dst, srcField, srcMapping);
+          } catch (IllegalAccessException e) {
+            e.printStackTrace();
+          }
 
-    return src;
+          break;
+        }
+      }
+    }
   }
 
 
