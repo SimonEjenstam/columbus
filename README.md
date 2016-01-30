@@ -7,4 +7,4 @@ In a pure layered application UI-, domain-, and data-entities are completely sep
 
 This is where Columbus enters. Columbus uses annotations to map fields between classes.
 
-*Version 1.0 is under development.*
+*Version 0.1 is under development.*
