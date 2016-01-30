@@ -1,5 +1,6 @@
 plugins {
     id "jacoco"
+    id "com.github.kt3k.coveralls" version "2.5.0"
 }
 
 apply plugin: 'maven'
@@ -25,4 +26,8 @@ jacocoTestReport {
         xml.enabled = true // coveralls plugin depends on xml format report
         html.enabled = true
     }
+}
+
+tasks.coveralls {
+    dependsOn 'check'
 }
