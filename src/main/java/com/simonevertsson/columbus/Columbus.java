@@ -10,54 +10,116 @@ public class Columbus {
    * Tries to map fields, annotated with {@link Mapping} from a source object to a destination object.
    *
    * @param src The source object annotated which has field annotated with {@link Mapping}
-   * @param dst The destination object whose fields will be updated with the mapped values.
+   * @param dstArgs Vararg with destination objects whose fields will be updated with the mapped values.
    * @return The destination object
    */
-  public static Object mapToDst(final Object src, final Object dst) throws IllegalAccessException {
+  public static void mapToDst(final Object src, final Object... dstArgs) {
     final Set<Field> srcMappedFields = findMappedFields(src.getClass());
-
     for(Field srcField : srcMappedFields) {
       final Mapping srcMapping = srcField.getAnnotation(Mapping.class);
-      if(srcMapping.clazz() != dst.getClass()) continue;
+      for(Object dst : dstArgs) {
+        if (srcMapping.clazz() == dst.getClass()) {
+          try {
+            trySetDstField(src, dst, srcField, srcMapping);
+          } catch (IllegalAccessException e) {
+            e.printStackTrace();
+          }
 
-      try {
-        Field dstField = dst.getClass().getDeclaredField(srcMapping.field());
-        dstField.set(dst, srcField.get(src));
-      } catch (NoSuchFieldException e) {
-        continue;
-      } catch (IllegalAccessException e) {
-        throw e;
+          break;
+        }
       }
     }
-
-    return dst;
   }
+
+  /**
+   * Tries to set the field specified in the supplied {@link Mapping}.
+   *
+   * @param src The source object from which the value will be retrieved
+   * @param dst The destination object which field will be set to the retrieved source value
+   * @param srcField The specified field from the source object whose value will be written to the destination field
+   * @param srcMapping The mapping annotation of the srcField describing which field the value should be written to
+   * @throws IllegalAccessException if the field values are incompatible
+     */
+  private static void trySetDstField(final Object src, final Object dst, final Field srcField, final Mapping srcMapping) throws IllegalAccessException {
+    // Store accessibility value to be able to override and reset field accessibility status.
+    final boolean srcAccessible = srcField.isAccessible();
+    boolean dstAccessible = true;
+    Field dstField = null;
+    try {
+      dstField = dst.getClass().getDeclaredField(srcMapping.field());
+      dstAccessible = dstField.isAccessible();
+      srcField.setAccessible(true);
+      dstField.setAccessible(true);
+      dstField.set(dst, srcField.get(src));
+    } catch (NoSuchFieldException e) {
+      return;
+    } catch (IllegalAccessException e) {
+      throw e;
+    } finally {
+      srcField.setAccessible(srcAccessible);
+      if(dstField != null) {
+        dstField.setAccessible(dstAccessible);
+      }
+    }
+  }
+
+  /**
+   * Tries to set the field specified in the supplied {@link Mapping}.
+   *
+   * @param src The source object from which the value will be retrieved
+   * @param dst The destination object which field will be set to the retrieved source value
+   * @param srcField The specified field from the source object whose value will be written to the destination field
+   * @param srcMapping The mapping annotation of the srcField describing which field the value should be written to
+   * @throws IllegalAccessException if the field values are incompatible
+   */
+  private static void tryGetDstField(final Object src, final Object dst, final Field srcField, final Mapping srcMapping) throws IllegalAccessException {
+    // Store accessibility value to be able to override and reset field accessibility status.
+    final boolean srcAccessible = srcField.isAccessible();
+    boolean dstAccessible = true;
+    Field dstField = null;
+    try {
+      dstField = dst.getClass().getDeclaredField(srcMapping.field());
+      dstAccessible = dstField.isAccessible();
+      srcField.setAccessible(true);
+      dstField.setAccessible(true);
+      srcField.set(src, dstField.get(dst));
+    } catch (NoSuchFieldException e) {
+      // Do nothing
+    } catch (IllegalAccessException e) {
+      throw e;
+    } finally {
+      srcField.setAccessible(srcAccessible);
+      if(dstField != null) {
+        dstField.setAccessible(dstAccessible);
+      }
+    }
+  }
+
 
   /**
    * Tries to map fields to a source object annotated with {@link Mapping} from a destination object.
    *
    * @param src The source object annotated which has fields annotated with {@link Mapping} that will be updated with values from destination object
-   * @param dst The destination object whose fields will be attempted to be retrieved
+   * @param dstArgs Vararg with destination objects whose fields will be attempted to be retrieved.
    * @return The source object
    */
-  public static Object mapFromDst(final Object src, final Object dst) throws IllegalAccessException {
+  public static void mapFromDst(final Object src, final Object... dstArgs) {
     final Set<Field> srcMappedFields = findMappedFields(src.getClass());
 
     for(Field srcField : srcMappedFields) {
       final Mapping srcMapping = srcField.getAnnotation(Mapping.class);
-      if(srcMapping.clazz() != dst.getClass()) continue;
+      for(Object dst : dstArgs) {
+        if (srcMapping.clazz() == dst.getClass()) {
+          try {
+            tryGetDstField(src, dst, srcField, srcMapping);
+          } catch (IllegalAccessException e) {
+            e.printStackTrace();
+          }
 
-      try {
-        Field dstField = dst.getClass().getDeclaredField(srcMapping.field());
-        srcField.set(src, dstField.get(dst));
-      } catch (NoSuchFieldException e) {
-        continue;
-      } catch (IllegalAccessException e) {
-        throw e;
+          break;
+        }
       }
     }
-
-    return src;
   }
 
 
@@ -75,6 +137,7 @@ public class Columbus {
       }
       c = c.getSuperclass();
     }
+
     return set;
   }
 }

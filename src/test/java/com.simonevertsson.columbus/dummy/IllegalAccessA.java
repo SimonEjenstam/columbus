@@ -5,9 +5,24 @@ import com.simonevertsson.columbus.Mapping;
 public class IllegalAccessA {
 
   @Mapping(clazz = IllegalAccessB.class, field = "fieldC") // Maps correctly
-  public String fieldA;
+  private String fieldA;
 
   @Mapping(clazz = IllegalAccessB.class, field = "fieldD") // Throws exception since field is private
-  public int fieldB;
+  private int fieldB;
 
+  public String getFieldA() {
+    return fieldA;
+  }
+
+  public void setFieldA(String fieldA) {
+    this.fieldA = fieldA;
+  }
+
+  public int getFieldB() {
+    return fieldB;
+  }
+
+  public void setFieldB(int fieldB) {
+    this.fieldB = fieldB;
+  }
 }

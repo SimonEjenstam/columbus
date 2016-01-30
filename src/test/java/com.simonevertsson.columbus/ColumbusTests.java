@@ -1,16 +1,10 @@
 package com.simonevertsson.columbus;
 
-import com.simonevertsson.columbus.dummy.IllegalAccessA;
-import com.simonevertsson.columbus.dummy.IllegalAccessB;
-import com.simonevertsson.columbus.dummy.NoSuchFieldA;
-import com.simonevertsson.columbus.dummy.NoSuchFieldB;
-import com.simonevertsson.columbus.dummy.SucceedingA;
-import com.simonevertsson.columbus.dummy.SucceedingB;
-import com.simonevertsson.columbus.dummy.SucceedingC;
-import com.simonevertsson.columbus.dummy.IllegalArgumentA;
-import com.simonevertsson.columbus.dummy.IllegalArgumentB;
+import com.simonevertsson.columbus.dummy.*;
 
 import org.junit.Test;
+
+import java.lang.reflect.Field;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNull;
@@ -22,23 +16,19 @@ public class ColumbusTests {
   public void testSrcMappedToDestination() {
     // Arrange
     SucceedingA succeedingA = new SucceedingA();
-    succeedingA.fieldA = "test";
-    succeedingA.fieldB = 1337;
+    succeedingA.setFieldA("test");
+    succeedingA.setFieldB(1337);;
 
     SucceedingB succeedingB = new SucceedingB();
 
     // Act
-    try {
-      Columbus.mapToDst(succeedingA, succeedingB);
-    } catch (IllegalAccessException e) {
-      e.printStackTrace();
-    }
+    Columbus.mapToDst(succeedingA, succeedingB);
 
     // Assert
-    assertThat(succeedingB.fieldC, is("test"));
-    assertThat(succeedingB.fieldD, is(1337));
-    assertThat(succeedingA.fieldA, is("test"));
-    assertThat(succeedingA.fieldB, is(1337));
+    assertThat(succeedingB.getFieldC(), is("test"));
+    assertThat(succeedingB.getFieldD(), is(1337));
+    assertThat(succeedingA.getFieldA(), is("test"));
+    assertThat(succeedingA.getFieldB(), is(1337));
   }
 
   @Test
@@ -46,41 +36,33 @@ public class ColumbusTests {
     // Arrange
     SucceedingA succeedingA = new SucceedingA();
     SucceedingB succeedingB = new SucceedingB();
-    succeedingB.fieldC = "test";
-    succeedingB.fieldD = 1337;
+    succeedingB.setFieldC("test");
+    succeedingB.setFieldD(1337);
 
     // Act
-    try {
-      Columbus.mapFromDst(succeedingA, succeedingB);
-    } catch (IllegalAccessException e) {
-      e.printStackTrace();
-    }
+    Columbus.mapFromDst(succeedingA, succeedingB);
 
     // Assert
-    assertThat(succeedingA.fieldA, is("test"));
-    assertThat(succeedingA.fieldB, is(1337));
-    assertThat(succeedingB.fieldC, is("test"));
-    assertThat(succeedingB.fieldD, is(1337));
+    assertThat(succeedingA.getFieldA(), is("test"));
+    assertThat(succeedingA.getFieldB(), is(1337));
+    assertThat(succeedingB.getFieldC(), is("test"));
+    assertThat(succeedingB.getFieldD(), is(1337));
   }
 
   @Test
-  public void testDoesNotAlterDestinationIfDestinationIsWrongClass() {
+  public void testDoesNotAlterDestinationIfDestinationIsWrongType() {
     // Arrange
     SucceedingA succeedingA = new SucceedingA();
     SucceedingC succeedingC = new SucceedingC();
-    succeedingA.fieldA = "test";
-    succeedingA.fieldB = 1337;
+    succeedingA.setFieldA("test");
+    succeedingA.setFieldB(1337);
 
     // Act
-    try {
-      Columbus.mapFromDst(succeedingA, succeedingC);
-    } catch (IllegalAccessException e) {
-      e.printStackTrace();
-    }
+    Columbus.mapFromDst(succeedingA, succeedingC);
 
     // Assert
-    assertNull(succeedingC.fieldC);
-    assertThat(succeedingC.fieldD, is(0));
+    assertNull(succeedingC.getFieldC());
+    assertThat(succeedingC.getFieldD(), is(0));
 
   }
 
@@ -89,15 +71,11 @@ public class ColumbusTests {
     // Arrange
     IllegalArgumentA illegalArgumentA = new IllegalArgumentA();
     IllegalArgumentB illegalArgumentB = new IllegalArgumentB();
-    illegalArgumentA.fieldA = "test";
-    illegalArgumentA.fieldB = 1337;
+    illegalArgumentA.setFieldA("test");
+    illegalArgumentA.setFieldB(1337);
 
     // Act
-    try {
-      Columbus.mapToDst(illegalArgumentA, illegalArgumentB);
-    } catch (IllegalAccessException e) {
-      e.printStackTrace();
-    }
+    Columbus.mapToDst(illegalArgumentA, illegalArgumentB);
 
   }
 
@@ -106,15 +84,11 @@ public class ColumbusTests {
     // Arrange
     IllegalArgumentA illegalArgumentA = new IllegalArgumentA();
     IllegalArgumentB illegalArgumentB = new IllegalArgumentB();
-    illegalArgumentA.fieldA = "test";
-    illegalArgumentA.fieldB = 1337;
+    illegalArgumentA.setFieldA("test");
+    illegalArgumentA.setFieldB(1337);
 
     // Act
-    try {
-      Columbus.mapFromDst(illegalArgumentA, illegalArgumentB);
-    } catch (IllegalAccessException e) {
-      e.printStackTrace();
-    }
+    Columbus.mapFromDst(illegalArgumentA, illegalArgumentB);
 
   }
 
@@ -123,21 +97,17 @@ public class ColumbusTests {
     // Arrange
     NoSuchFieldA noSuchFieldA = new NoSuchFieldA();
     NoSuchFieldB noSuchFieldB = new NoSuchFieldB();
-    noSuchFieldA.fieldA = "test";
-    noSuchFieldA.fieldB = 1337;
+    noSuchFieldA.setFieldA("test");
+    noSuchFieldA.setFieldB(1337);
 
     // Act
-    try {
-      Columbus.mapToDst(noSuchFieldA, noSuchFieldB);
-    } catch (IllegalAccessException e) {
-      e.printStackTrace();
-    }
+    Columbus.mapToDst(noSuchFieldA, noSuchFieldB);
 
     // Assert
-    assertThat(noSuchFieldA.fieldA, is("test"));
-    assertThat(noSuchFieldA.fieldB, is(1337));
-    assertNull(noSuchFieldB.fieldC);
-    assertThat(noSuchFieldB.fieldD, is(1337));
+    assertThat(noSuchFieldA.getFieldA(), is("test"));
+    assertThat(noSuchFieldA.getFieldB(), is(1337));
+    assertNull(noSuchFieldB.getFieldC());
+    assertThat(noSuchFieldB.getFieldD(), is(1337));
 
   }
 
@@ -146,63 +116,106 @@ public class ColumbusTests {
     // Arrange
     NoSuchFieldA noSuchFieldA = new NoSuchFieldA();
     NoSuchFieldB noSuchFieldB = new NoSuchFieldB();
-    noSuchFieldB.fieldC = "test";
-    noSuchFieldB.fieldD = 1337;
+    noSuchFieldB.setFieldC("test");
+    noSuchFieldB.setFieldD(1337);
 
     // Act
-    try {
-      Columbus.mapFromDst(noSuchFieldA, noSuchFieldB);
-    } catch (IllegalAccessException e) {
-      e.printStackTrace();
-    }
+    Columbus.mapFromDst(noSuchFieldA, noSuchFieldB);
 
     // Assert
-    assertNull(noSuchFieldA.fieldA);
-    assertThat(noSuchFieldA.fieldB, is(1337));
-    assertThat(noSuchFieldB.fieldC, is("test"));
-    assertThat(noSuchFieldB.fieldD, is(1337));
+    assertNull(noSuchFieldA.getFieldA());
+    assertThat(noSuchFieldA.getFieldB(), is(1337));
+    assertThat(noSuchFieldB.getFieldC(), is("test"));
+    assertThat(noSuchFieldB.getFieldD(), is(1337));
 
   }
 
   @Test
-  public void testMapFromDstFailsIfTryingToAccessWrongField() {
+  public void testMapFromDstDoesNotAlterAccessibilityIfEncounteringUnknownFields() throws NoSuchFieldException {
     // Arrange
-    IllegalAccessA illegalAccessA = new IllegalAccessA();
-    IllegalAccessB illegalAccessB = new IllegalAccessB();
-    illegalAccessA.fieldA = "test";
-    illegalAccessA.fieldB = 1337;
+    NoSuchFieldA noSuchFieldA = new NoSuchFieldA();
+    NoSuchFieldB noSuchFieldB = new NoSuchFieldB();
+    noSuchFieldB.setFieldC("test");
+    noSuchFieldB.setFieldD(1337);
 
     // Act
-    boolean thrown = false;
-    try {
-      Columbus.mapFromDst(illegalAccessA, illegalAccessB);
-    } catch (IllegalAccessException e) {
-      thrown = true;
-    }
+    Columbus.mapFromDst(noSuchFieldA, noSuchFieldB);
 
     // Assert
-    assertThat(thrown, is(true));
-
+    Field fieldA = noSuchFieldA.getClass().getDeclaredField("fieldA");
+    Field fieldB = noSuchFieldA.getClass().getDeclaredField("fieldB");
+    Field fieldC = noSuchFieldB.getClass().getDeclaredField("fieldC");
+    Field fieldD = noSuchFieldB.getClass().getDeclaredField("fieldD");
+    assertThat(fieldA.isAccessible(), is(false));
+    assertThat(fieldB.isAccessible(), is(false));
+    assertThat(fieldC.isAccessible(), is(false));
+    assertThat(fieldD.isAccessible(), is(false));
   }
 
   @Test
-  public void testMapToDstFailsIfTryingToAccessWrongField() {
+  public void testMapToDstDoesNotAlterAccessibilityIfEncounteringUnknownFields() throws NoSuchFieldException {
     // Arrange
-    IllegalAccessA illegalAccessA = new IllegalAccessA();
-    IllegalAccessB illegalAccessB = new IllegalAccessB();
-    illegalAccessB.fieldC = "test";
-    illegalAccessB.setFieldD(1337);
+    NoSuchFieldA noSuchFieldA = new NoSuchFieldA();
+    NoSuchFieldB noSuchFieldB = new NoSuchFieldB();
+    noSuchFieldB.setFieldC("test");
+    noSuchFieldB.setFieldD(1337);
 
     // Act
-    boolean thrown = false;
-    try {
-      Columbus.mapToDst(illegalAccessA, illegalAccessB);
-    } catch (IllegalAccessException e) {
-      thrown = true;
-    }
+    Columbus.mapToDst(noSuchFieldA, noSuchFieldB);
 
     // Assert
-    assertThat(thrown, is(true));
-
+    Field fieldA = noSuchFieldA.getClass().getDeclaredField("fieldA");
+    Field fieldB = noSuchFieldA.getClass().getDeclaredField("fieldB");
+    Field fieldC = noSuchFieldB.getClass().getDeclaredField("fieldC");
+    Field fieldD = noSuchFieldB.getClass().getDeclaredField("fieldD");
+    assertThat(fieldA.isAccessible(), is(false));
+    assertThat(fieldB.isAccessible(), is(false));
+    assertThat(fieldC.isAccessible(), is(false));
+    assertThat(fieldD.isAccessible(), is(false));
   }
+
+  @Test
+  public void testMapFromDstMultipleClasses() throws NoSuchFieldException {
+    // Arrange
+    Movie movie = new Movie();
+    movie.setTitle("Star Wars: The Force Awakens");
+    movie.setCost(123.50f);
+
+    Person person = new Person();
+    person.setName("Simon Evertsson");
+    person.setAge(24);
+
+    TicketViewModel ticketViewModel = new TicketViewModel();
+
+    // Act
+    Columbus.mapFromDst(ticketViewModel, movie, person);
+
+    // Assert
+    assertThat(ticketViewModel.getMovie(), is("Star Wars: The Force Awakens"));
+    assertThat(ticketViewModel.getCost(), is(123.50f));
+    assertThat(ticketViewModel.getBoughtBy(), is("Simon Evertsson"));
+  }
+
+  @Test
+  public void testMapToDstMultipleClasses() throws NoSuchFieldException {
+    // Arrange
+    Movie movie = new Movie();
+    Person person = new Person();
+
+    TicketViewModel ticketViewModel = new TicketViewModel();
+    ticketViewModel.setMovie("Star Wars: The Force Awakens");
+    ticketViewModel.setCost(123.50f);
+    ticketViewModel.setBoughtBy("Simon Evertsson");
+
+    // Act
+    Columbus.mapToDst(ticketViewModel, movie, person);
+
+    // Assert
+    assertThat(movie.getTitle(), is("Star Wars: The Force Awakens"));
+    assertThat(movie.getCost(), is(123.50f));
+    assertThat(person.getName(), is("Simon Evertsson"));
+  }
+
+
+
 }
