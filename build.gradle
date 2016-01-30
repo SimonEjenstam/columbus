@@ -1,0 +1,33 @@
+plugins {
+    id "jacoco"
+    id "com.github.kt3k.coveralls" version "2.5.0"
+}
+
+apply plugin: 'maven'
+
+group 'com.github.sievertsson'
+
+apply plugin: 'java'
+
+version = 0.1
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true // coveralls plugin depends on xml format report
+        html.enabled = true
+    }
+}
+
+tasks.coveralls {
+    dependsOn 'check'
+}
