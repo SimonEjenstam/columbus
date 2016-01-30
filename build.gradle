@@ -9,7 +9,7 @@ group 'com.github.sievertsson'
 
 apply plugin: 'java'
 
-version = 0.1
+version = 1.0
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
