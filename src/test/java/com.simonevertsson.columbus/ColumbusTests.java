@@ -22,7 +22,7 @@ public class ColumbusTests {
     SucceedingB succeedingB = new SucceedingB();
 
     // Act
-    Columbus.mapToDst(succeedingA, succeedingB);
+    Columbus.mapTo(succeedingA, succeedingB);
 
     // Assert
     assertThat(succeedingB.getFieldC(), is("test"));
@@ -40,7 +40,7 @@ public class ColumbusTests {
     succeedingB.setFieldD(1337);
 
     // Act
-    Columbus.mapFromDst(succeedingA, succeedingB);
+    Columbus.mapFrom(succeedingA, succeedingB);
 
     // Assert
     assertThat(succeedingA.getFieldA(), is("test"));
@@ -58,7 +58,7 @@ public class ColumbusTests {
     succeedingA.setFieldB(1337);
 
     // Act
-    Columbus.mapFromDst(succeedingA, succeedingC);
+    Columbus.mapFrom(succeedingA, succeedingC);
 
     // Assert
     assertNull(succeedingC.getFieldC());
@@ -75,7 +75,7 @@ public class ColumbusTests {
     illegalArgumentA.setFieldB(1337);
 
     // Act
-    Columbus.mapToDst(illegalArgumentA, illegalArgumentB);
+    Columbus.mapTo(illegalArgumentA, illegalArgumentB);
 
   }
 
@@ -88,7 +88,7 @@ public class ColumbusTests {
     illegalArgumentA.setFieldB(1337);
 
     // Act
-    Columbus.mapFromDst(illegalArgumentA, illegalArgumentB);
+    Columbus.mapFrom(illegalArgumentA, illegalArgumentB);
 
   }
 
@@ -101,7 +101,7 @@ public class ColumbusTests {
     noSuchFieldA.setFieldB(1337);
 
     // Act
-    Columbus.mapToDst(noSuchFieldA, noSuchFieldB);
+    Columbus.mapTo(noSuchFieldA, noSuchFieldB);
 
     // Assert
     assertThat(noSuchFieldA.getFieldA(), is("test"));
@@ -120,7 +120,7 @@ public class ColumbusTests {
     noSuchFieldB.setFieldD(1337);
 
     // Act
-    Columbus.mapFromDst(noSuchFieldA, noSuchFieldB);
+    Columbus.mapFrom(noSuchFieldA, noSuchFieldB);
 
     // Assert
     assertNull(noSuchFieldA.getFieldA());
@@ -139,7 +139,7 @@ public class ColumbusTests {
     noSuchFieldB.setFieldD(1337);
 
     // Act
-    Columbus.mapFromDst(noSuchFieldA, noSuchFieldB);
+    Columbus.mapFrom(noSuchFieldA, noSuchFieldB);
 
     // Assert
     Field fieldA = noSuchFieldA.getClass().getDeclaredField("fieldA");
@@ -161,7 +161,7 @@ public class ColumbusTests {
     noSuchFieldB.setFieldD(1337);
 
     // Act
-    Columbus.mapToDst(noSuchFieldA, noSuchFieldB);
+    Columbus.mapTo(noSuchFieldA, noSuchFieldB);
 
     // Assert
     Field fieldA = noSuchFieldA.getClass().getDeclaredField("fieldA");
@@ -188,7 +188,7 @@ public class ColumbusTests {
     TicketViewModel ticketViewModel = new TicketViewModel();
 
     // Act
-    Columbus.mapFromDst(ticketViewModel, movie, person);
+    Columbus.mapFrom(ticketViewModel, movie, person);
 
     // Assert
     assertThat(ticketViewModel.getMovie(), is("Star Wars: The Force Awakens"));
@@ -208,7 +208,7 @@ public class ColumbusTests {
     ticketViewModel.setBoughtBy("Simon Evertsson");
 
     // Act
-    Columbus.mapToDst(ticketViewModel, movie, person);
+    Columbus.mapTo(ticketViewModel, movie, person);
 
     // Assert
     assertThat(movie.getTitle(), is("Star Wars: The Force Awakens"));
