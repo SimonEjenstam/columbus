@@ -127,7 +127,7 @@ TicketViewModel ticketViewModel = new TicketViewModel();
 Columbus.mapFrom(ticketViewModel, movie, person);  // mapFrom and mapTo accepts varArgs to support one-to-many mappings
 ```
 
-And to write the corresponding fields back to a Movie and a Merson instance:
+And to write the corresponding fields back to a Movie and a Person instance:
 ```java
 TicketViewModel ticketViewModel = new TicketViewModel();
 ticketViewModel.setMovie("Star Wars: The Force Awakens");
